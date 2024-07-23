@@ -4,7 +4,7 @@ import './styles/index.scss'
 const App = () => {
 
   return (
-    <div className='app'>
+    <div className='app text-3xl'>
       App
     </div>
   )
