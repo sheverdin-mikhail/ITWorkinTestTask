@@ -22,19 +22,6 @@ server.use(async (req, res, next) => {
     next();
 });
 
-// Эндпоинт для создания таски
-server.get('/tasks', (_, res) => {
-    try {
-        const db = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'db.json'), 'UTF-8'));
-        const { tasks = [] } = db;
-        console.log(db)
-        console.log(tasks)
-        return res.json(tasks);
-    } catch (e) {
-        console.log(e);
-        return res.status(500).json({ message: e.message });
-    }
-});
 
 server.use(router);
 
