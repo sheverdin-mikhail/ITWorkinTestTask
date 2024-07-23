@@ -4,8 +4,9 @@ import { TasksListEmpty } from '../TasksListEmpty/TasksListEmpty';
 import { TasksListItem } from '../TasksListItem/TasksListItem';
 import { Board } from '@/shared/ui/Board/Board';
 import { Loader, LoaderSize } from '@/shared/ui/Loader/Loader';
-import { useTasksList } from '../../model/context/taskListContext';
-import { Task } from '@/entities/Task';
+import { Task, useTask } from '@/entities/Task';
+import { TaskErrorType } from '@/entities/Task/model/types/task';
+import { TasksListError } from '../TasksListError/TasksListError';
 
 interface TasksListProps {
     className?: string;
@@ -13,10 +14,18 @@ interface TasksListProps {
 
 export const TasksList: React.FC<TasksListProps> = (props) => {
     const { className } = props;
-    const { tasks, isLoading, isDeleting, deleteTask } = useTasksList();
+    const { tasks, isLoading, isDeleting, deleteTask, setEditFormData, isError, error } = useTask();
 
-    const onTaskDelete = (task: Task) => {
+    const onTaskDeleteHandler = (task: Task) => {
         deleteTask?.(task)
+    }
+
+    const onTaskEditHandler = (task: Task) => {
+        setEditFormData?.(task)
+    } 
+
+    if(error?.type === TaskErrorType.GET && isError) {
+        return <TasksListError />
     }
 
     return (
@@ -30,7 +39,7 @@ export const TasksList: React.FC<TasksListProps> = (props) => {
                         ? <TasksListEmpty/> 
                         : tasks.map((task) => 
                             (
-                                <TasksListItem disabled={isDeleting} task={task} key={task.id} onDelete={onTaskDelete}/>
+                                <TasksListItem disabled={isDeleting ?? false} task={task} key={task.id} onDelete={onTaskDeleteHandler} onEdit={onTaskEditHandler}/>
                             ))
                 }
             </ul>
